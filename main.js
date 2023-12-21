@@ -123,13 +123,13 @@ function draw() {
   });
   drawPlayField();
   drawTetromino();
-  console.table(playfield);
+  // console.table(playfield);
 }
 
 document.addEventListener("keydown", onKeyDown);
 
 function onKeyDown(event) {
-  console.log(event);
+  // console.log(event);
   switch (event.key) {
     case "ArrowDown":
       moveTetrominoDown();
