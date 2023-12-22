@@ -131,6 +131,9 @@ document.addEventListener("keydown", onKeyDown);
 function onKeyDown(event) {
   // console.log(event);
   switch (event.key) {
+    case "ArrowUp":
+      rotateTetromino();
+      break;
     case "ArrowDown":
       moveTetrominoDown();
       break;
@@ -146,7 +149,7 @@ function onKeyDown(event) {
 
 function moveTetrominoDown() {
   tetromino.row += 1;
-  if (isOutsideOfGameBoard()) {
+  if (isOutsideOfGameBoard() || hasCollisions()) {
     tetromino.row -= 1;
     placeTetromino();
   }
@@ -154,14 +157,14 @@ function moveTetrominoDown() {
 
 function moveTetrominoLeft() {
   tetromino.column -= 1;
-  if (isOutsideOfGameBoard()) {
+  if (isOutsideOfGameBoard() || hasCollisions()) {
     tetromino.column += 1;
   }
 }
 
 function moveTetrominoRight() {
   tetromino.column += 1;
-  if (isOutsideOfGameBoard()) {
+  if (isOutsideOfGameBoard() || hasCollisions()) {
     tetromino.column -= 1;
   }
 }
@@ -182,6 +185,21 @@ function isOutsideOfGameBoard() {
   return false;
 }
 
+function hasCollisions() {
+  const matrixSize = tetromino.matrix.length;
+  for (let row = 0; row < matrixSize; row++) {
+    for (let column = 0; column < matrixSize; column++) {
+      if (tetromino.matrix[row][column] == 0) {
+        continue;
+      }
+      if (playfield[tetromino.row + row][tetromino.column + column]) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 function placeTetromino() {
   const matrixSize = tetromino.matrix.length;
 
@@ -194,4 +212,22 @@ function placeTetromino() {
     }
   }
   generateTetromino();
+}
+
+function rotateTetromino() {
+  const oldMatrix = tetromino.matrix;
+  const rotatedMatrix = rotateMatrix(tetromino.matrix);
+  tetromino.matrix = rotatedMatrix;
+}
+
+function rotateMatrix(matrixTetromino) {
+  const N = matrixTetromino.length;
+  const rotateMatrix = [];
+  for (let i = 0; i < N; i++) {
+    rotateMatrix[i] = [];
+    for (let j = 0; j < N; j++) {
+      rotateMatrix[i][j] = matrixTetromino[N - j - 1][i];
+    }
+  }
+  return rotateMatrix;
 }
